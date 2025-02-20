@@ -1,27 +1,42 @@
 from collections import OrderedDict
 
 class LRUCache:
+
     def __init__(self, capacity: int):
         self.cache = OrderedDict()
         self.capacity = capacity
 
-    def access_list(self, key: int):
+    def get(self, key: int) -> int:
         if key in self.cache:
-            self.cache.move_to_end(key)  
-        else:
-            if len(self.cache) >= self.capacity:
-                self.cache.popitem(last=False) 
-            self.cache[key] = True
+            self.cache.move_to_end(key) 
+            return self.cache[key]
+        return -1
 
-    def display_cache(self):
-        print("Cache", list(self.cache.keys()))
+    def put(self, key: int, value: int):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        elif len(self.cache) >= self.capacity:
+            self.cache.popitem(last=False) 
+
+        self.cache[key] = value
+
+    def display(self):
+        print("Cache:", list(self.cache.items()))
+
+    def size(self) -> int:
+        return len(self.cache)
+
 
 if __name__ == "__main__":
-    cache_size = 4
-    lru_cache = LRUCache(cache_size)
+    cache = LRUCache(4)
+
+    operations = [(1, 10), (2, 20), (3, 30), (4, 40), (1, 15), (2, 25), (5, 50)]
+
+    for key, value in operations:
+        cache.put(key, value)
+        cache.display()
+
+    print("Fetching key 3:", cache.get(3)) 
+    print("Fetching key 6:", cache.get(6)) 
+    print("Cache size:", cache.size())
     
-    sequence = [1, 2, 3, 4, 1, 2, 5] 
-    
-    for item in sequence:
-        lru_cache.access_list(item)
-        lru_cache.display_cache()
